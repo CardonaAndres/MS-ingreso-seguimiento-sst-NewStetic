@@ -1,0 +1,21 @@
+{
+  "name": "staff",
+  "version": "1.0.0",
+  "description": "Gestiona procesos iniciales, examenes medicos y seguimiento continuo del personal",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js"
+  },
+  "author": "Andrés Cardona",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "16.5.0",
+    "express": "5.1.0",
+    "jsonwebtoken": "9.0.2",
+    "morgan": "1.10.0",
+    "mssql": "11.0.1"
+  }
+}
