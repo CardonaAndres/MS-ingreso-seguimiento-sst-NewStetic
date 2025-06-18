@@ -177,7 +177,7 @@ export const users = (page = 1, limit = 30) => {
     `
 }
 
-export const userByNumDoc = `SELECT distinct   
+export const userByProperties = `SELECT distinct   
         case when c0540_id_cia=1 then 'New Stetic'  else 'Temporal' end Empresa 
         , convert(varchar(1),[w0550_contratos].c0550_id) as id_Contrato
         ,t200.f200_nit
@@ -316,7 +316,16 @@ export const userByNumDoc = `SELECT distinct
         
         -------------------------------------------------------
 
-        where  (w0003_lenguajes.c0003_id in (1))  
-        --id_Contrato=1  
-        and [w0550_contratos].c0550_ind_estado=1
-        and Retiros.fechaRetiro is null and t200.f200_nit = @numDoc`;
+        WHERE
+			w0003_lenguajes.c0003_id IN (1)
+			AND [w0550_contratos].c0550_ind_estado = 1
+			AND Retiros.fechaRetiro IS NULL
+			AND (
+				t200.f200_nit LIKE @property OR
+				f200_nombres LIKE @property OR
+				f200_apellido1 LIKE @property OR
+				f200_apellido2 LIKE @property OR
+				f015_email LIKE @property OR
+				CARGOS.C0763_DESCRIPCION LIKE @property
+			)
+`

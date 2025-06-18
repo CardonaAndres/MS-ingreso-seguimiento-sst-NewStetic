@@ -1,17 +1,20 @@
 import { UserModel } from '../models/user.model.js';
 
 export class UserController {
-    static async getUserByNumDoc(req, res, next){
+    static async getUserByProperties(req, res, next){
         try {
-            const { num_doc } = req.params;
+            const { property } = req.params;
+            const users = await UserModel.getUserByProperties(property);
 
-            const user = await UserModel.getUserByNumDoc(num_doc);
-
-            if(!user[0]) throw new Error('Usuario NO encontrado')
+            if(users.length < 1){
+                const err = new Error('No hay resultados');
+                err.status = 404;
+                throw err
+            }
 
             return res.status(200).json({
                 message : 'Usuario encontrado correctamente',
-                user : user[0]
+                users
             });
 
         } catch (err) {

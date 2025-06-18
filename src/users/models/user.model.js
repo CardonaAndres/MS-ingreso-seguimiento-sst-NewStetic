@@ -5,12 +5,12 @@ import * as queries from '../utils/queries.js';
 const conn = await conn_db();
 
 export class UserModel {
-    static async getUserByNumDoc(num_doc){
-        const user = await conn.request()
-        .input('numDoc', sql.NVarChar, num_doc)
-        .query(queries.userByNumDoc)
+    static async getUserByProperties(property){
+        const users = await conn.request()
+        .input('property', sql.NVarChar, `%${property}%`)
+        .query(queries.userByProperties)
 
-        return user.recordset
+        return users.recordset
     }
 
     static async getAllUsersPaginate(page = 1, limit = 30){
