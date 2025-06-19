@@ -110,11 +110,6 @@ export const users = (page = 1, limit = 30) => {
         AND indestcivil.c0006_valor = w0540_empleados.[c0540_ind_estado_civil]
         LEFT JOIN
         unoee.dbo.w0003_lenguajes ON w0003_lenguajes.c0003_id = indestcivil.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indgrusang.c0006_id_lenguaje AND 
-        --dbo.w0003_lenguajes.c0003_id = indest.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indsexo.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indcatcar.c0006_id_lenguaje AND 
-        --dbo.w0003_lenguajes.c0003_id = indcatmot.c0006_id_lenguaje 
         LEFT OUTER JOIN
         unoee.dbo.w0006_tipos AS T18 ON T18.c0006_id_tipo = 'c0550_ind_termino' 
         AND T18.c0006_id_lenguaje = 1 AND T18.c0006_valor = [w0550_contratos].c0550_ind_termino_contrato
@@ -123,15 +118,12 @@ export const users = (page = 1, limit = 30) => {
         Left outer join
         (select v743.v743_rowid,v743_texto as Proceso from [Unoee].[dbo].[t743_mm_entidad_atributo] as Atributo
                     inner  join unoee.dbo.[v743] as v743 on Atributo.[f743_rowid]=v743_rowid_entidad_atributo
-                    --left outer join [Unoee].[dbo].[t741_mm_maestro_detalle] as Detalle_Maestro on  Detalle_Maestro.f741_rowid_maestro=f743_rowid_maestro
         where atributo.f743_rowid_entidad='108' and f743_ind_tipo_atributo='7' and f743_rowid_maestro=143 and  v743_rowid_entidad_atributo=1478) as Proceso
         on Proceso.v743_rowid=[w0550_contratos].c0550_rowid_movto_entidad
         Left outer join 
         (select v743.v743_rowid,v743_texto as TipoAprendiz 
                     from [Unoee].[dbo].[t743_mm_entidad_atributo] as Atributo
                     Inner  join unoee.dbo.[v743] as v743 on Atributo.[f743_rowid]=v743_rowid_entidad_atributo
-                    --inner join [Unoee].[dbo].[t741_mm_maestro_detalle] as Detalle_Maestro 
-                    --on  Detalle_Maestro.f741_rowid_maestro=f743_rowid_maestro
         where atributo.f743_rowid_entidad='108' and f743_ind_tipo_atributo='7'  
         and f743_rowid_maestro=145 and v743_rowid_entidad_atributo=1632 ) As TipoAprendiz
         on TipoAprendiz.v743_rowid=[w0550_contratos].c0550_rowid_movto_entidad
@@ -259,11 +251,6 @@ export const userByProperties = `SELECT distinct
         AND indestcivil.c0006_valor = w0540_empleados.[c0540_ind_estado_civil]
         LEFT JOIN
         unoee.dbo.w0003_lenguajes ON w0003_lenguajes.c0003_id = indestcivil.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indgrusang.c0006_id_lenguaje AND 
-        --dbo.w0003_lenguajes.c0003_id = indest.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indsexo.c0006_id_lenguaje 
-        --AND dbo.w0003_lenguajes.c0003_id = indcatcar.c0006_id_lenguaje AND 
-        --dbo.w0003_lenguajes.c0003_id = indcatmot.c0006_id_lenguaje 
         LEFT OUTER JOIN
         unoee.dbo.w0006_tipos AS T18 ON T18.c0006_id_tipo = 'c0550_ind_termino' 
         AND T18.c0006_id_lenguaje = 1 AND T18.c0006_valor = [w0550_contratos].c0550_ind_termino_contrato
@@ -272,15 +259,12 @@ export const userByProperties = `SELECT distinct
         Left outer join
         (select v743.v743_rowid,v743_texto as Proceso from [Unoee].[dbo].[t743_mm_entidad_atributo] as Atributo
                     inner  join unoee.dbo.[v743] as v743 on Atributo.[f743_rowid]=v743_rowid_entidad_atributo
-                    --left outer join [Unoee].[dbo].[t741_mm_maestro_detalle] as Detalle_Maestro on  Detalle_Maestro.f741_rowid_maestro=f743_rowid_maestro
         where atributo.f743_rowid_entidad='108' and f743_ind_tipo_atributo='7' and f743_rowid_maestro=143 and  v743_rowid_entidad_atributo=1478) as Proceso
         on Proceso.v743_rowid=[w0550_contratos].c0550_rowid_movto_entidad
         Left outer join 
         (select v743.v743_rowid,v743_texto as TipoAprendiz 
                     from [Unoee].[dbo].[t743_mm_entidad_atributo] as Atributo
                     Inner  join unoee.dbo.[v743] as v743 on Atributo.[f743_rowid]=v743_rowid_entidad_atributo
-                    --inner join [Unoee].[dbo].[t741_mm_maestro_detalle] as Detalle_Maestro 
-                    --on  Detalle_Maestro.f741_rowid_maestro=f743_rowid_maestro
         where atributo.f743_rowid_entidad='108' and f743_ind_tipo_atributo='7'  
         and f743_rowid_maestro=145 and v743_rowid_entidad_atributo=1632 ) As TipoAprendiz
         on TipoAprendiz.v743_rowid=[w0550_contratos].c0550_rowid_movto_entidad

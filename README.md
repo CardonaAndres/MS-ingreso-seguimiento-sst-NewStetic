@@ -31,8 +31,7 @@ Este microservicio se encarga de gestionar el **ingreso de nuevos colaboradores*
 ## 🛠️ Tecnologías Utilizadas
 
 * **Node.js + Express.js** – API REST para lógica de negocio.
-* **SQL Server** – Almacenamiento estructurado y seguro de información médica y laboral.
-* **Sequelize** – ORM para interacción con la base de datos.
+* **SQL Server** – Almacenamiento estructurado y seguro de información médica y laboral
 * **JWT** – Seguridad mediante autenticación basada en tokens.
 
 ---
