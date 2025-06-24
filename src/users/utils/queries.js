@@ -101,6 +101,7 @@ export const users = `
         [w0550_contratos].c0550_ind_estado AS [Estado Empleado],
         
         CARGOS.C0763_ID AS Cargo,
+        CARGOS.[c0763_rowid_jefe_inmediato] As CodigoJefeImediato,
         CARGOS.C0763_DESCRIPCION AS "Desc. Cargo",
         cco.f284_id AS Id_cco,
         cco.f284_descripcion AS [Centro de costos],
@@ -297,6 +298,7 @@ export const usersByProperties = `
         
         CARGOS.C0763_ID AS Cargo,
         CARGOS.C0763_DESCRIPCION AS "Desc. Cargo",
+        CARGOS.[c0763_rowid_jefe_inmediato] As CodigoJefeImediato,
         cco.f284_id AS Id_cco,
         cco.f284_descripcion AS [Centro de costos],
         [f107_descripcion] AS Gerencia,
@@ -501,6 +503,7 @@ export const usersIdles = `
         
         CARGOS.C0763_ID AS Cargo_ID,
         CARGOS.C0763_DESCRIPCION AS "Desc. Cargo",
+        CARGOS.[c0763_rowid_jefe_inmediato] As CodigoJefeImediato,
         cco.f284_id AS Id_cco,
         cco.f284_descripcion AS [Centro de costos],
         [f107_descripcion] AS Gerencia,
@@ -705,6 +708,7 @@ export const usersIdlesByProperties = `
         
         CARGOS.C0763_ID AS Cargo_ID,
         CARGOS.C0763_DESCRIPCION AS "Desc. Cargo",
+        CARGOS.[c0763_rowid_jefe_inmediato] As CodigoJefeImediato,
         cco.f284_id AS Id_cco,
         cco.f284_descripcion AS [Centro de costos],
         [f107_descripcion] AS Gerencia,
