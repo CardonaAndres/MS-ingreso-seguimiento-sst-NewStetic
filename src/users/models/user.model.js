@@ -48,4 +48,14 @@ export class UserModel {
         }
     }
 
+    static async getUserWorkHistory(docNumber){
+        const userWorkHistory = await conn.request()
+        .input('docNumber', sql.NVarChar, String(docNumber))
+        .query(queries.userWorkHistory);
+
+        return {
+            userWorkHistory : userWorkHistory.recordset
+        }
+    }
+
 }

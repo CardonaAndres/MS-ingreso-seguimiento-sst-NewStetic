@@ -85,4 +85,25 @@ export class UserController {
             next(err);
         }
     }
+
+    static async getWorkHistoryWork(req, res, next){
+        try {
+            const { docNumber } = req.params;
+            const { userWorkHistory } = await UserModel.getUserWorkHistory(docNumber);
+            
+            if(userWorkHistory.length < 1){
+                const err = new Error('El usuario con ese número de documento no existe');
+                err.status = 404;
+                throw err
+            }
+
+            return res.status(200).json({
+                message : 'Trayectorial laboral del usuario',
+                userWorkHistory
+            })
+
+        } catch (err) {
+            next(err);
+        }
+    }
 }

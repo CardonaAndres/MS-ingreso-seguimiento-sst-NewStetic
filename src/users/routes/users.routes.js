@@ -8,5 +8,6 @@ router.get('/', authMiddleware, UserController.getUsersPaginate);
 router.get('/idles', authMiddleware, UserController.getUsersIdlesPaginate);
 router.get('/:property', authMiddleware, UserController.getUsersByProperties);
 router.get('/idles/:property', authMiddleware, UserController.getUsersIdlesByProperties);
+router.get('/history/:docNumber', authMiddleware, UserController.getWorkHistoryWork);
 
 export default router;
