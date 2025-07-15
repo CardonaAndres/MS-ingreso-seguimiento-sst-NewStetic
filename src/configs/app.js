@@ -8,7 +8,7 @@ import { errorHandler } from '../middlewares/error.handler.js';
 const app = express();
 
 app.use(cors({
-    origin: process.env.CLIENT_ORIGIN,
+    origin: [ process.env.SST_CLIENT ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
 }));

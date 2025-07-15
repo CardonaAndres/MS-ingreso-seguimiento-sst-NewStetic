@@ -62,7 +62,9 @@ Para el correcto funcionamiento del microservicio, se deben definir las variable
 ```env
 # Puerto en el que se ejecuta el microservicio
 NODE_ENV=development
-CLIENT_ORIGIN=http://localhost:5173
+
+# Client URLs
+SST_CLIENT=http://localhost:5001
 
 # URLs de servicios externos
 COLMEDICOS_API_URL=
