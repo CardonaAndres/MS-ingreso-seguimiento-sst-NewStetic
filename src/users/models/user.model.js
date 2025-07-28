@@ -1,8 +1,8 @@
 import sql from 'mssql';
-import { conn_db } from "../../utils/conn.database.js";
 import * as queries from '../utils/queries.js';
+import { ConnDataBase } from '../../app/utils/conn.database.js';
 
-const conn = await conn_db();
+const conn = new ConnDataBase().connect(String(process.env.DB_COMP_NAME));
 
 export class UserModel {
     static async getUsersByProperties(property){

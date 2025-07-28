@@ -1,13 +1,12 @@
 import express from "express";
 import { UserController } from "../controllers/users.controller.js";
-import { authMiddleware } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get('/', authMiddleware, UserController.getUsersPaginate);
-router.get('/idles', authMiddleware, UserController.getUsersIdlesPaginate);
-router.get('/:property', authMiddleware, UserController.getUsersByProperties);
-router.get('/idles/:property', authMiddleware, UserController.getUsersIdlesByProperties);
-router.get('/history/:docNumber', authMiddleware, UserController.getWorkHistoryWork);
+router.get('/', UserController.getUsersPaginate);
+router.get('/idles', UserController.getUsersIdlesPaginate);
+router.get('/:property', UserController.getUsersByProperties);
+router.get('/idles/:property', UserController.getUsersIdlesByProperties);
+router.get('/history/:docNumber', UserController.getWorkHistoryWork);
 
 export default router;

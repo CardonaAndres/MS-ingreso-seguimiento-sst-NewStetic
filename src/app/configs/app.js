@@ -2,8 +2,10 @@ import cors from 'cors';
 import express from "express";
 import morgan from "morgan";
 import cookieParser from 'cookie-parser';
-import staffRouter from '../users/routes/users.routes.js'
+import staffRouter from '../../users/routes/users.routes.js'
+import examTypes from '../../medical_follow_up/routes/examtypes.routes.js';
 import { errorHandler } from '../middlewares/error.handler.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 
 const app = express();
 
@@ -17,7 +19,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser(String(process.env.COOKIE_SECRET)));
 
-app.use('/API/v1/staff', staffRouter);
+app.use('/API/v1/staff', authMiddleware, staffRouter);
+app.use('/API/v1/examtypes', authMiddleware, examTypes);
 
 app.use(errorHandler);
 
