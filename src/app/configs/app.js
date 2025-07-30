@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser(String(process.env.COOKIE_SECRET)));
 
-app.use('/API/v1/staff', authMiddleware, staffRouter);
-app.use('/API/v1/examtypes', authMiddleware, examTypes);
+app.use('/API-SST/v1/staff', authMiddleware, staffRouter);
+app.use('/API-SST/v1/examtypes', authMiddleware, examTypes);
 
 app.use(errorHandler);
 

@@ -49,7 +49,15 @@ export class ExamTypesController {
 
     static async updateExamType(req, res, next){
         try {
-            const { name, state } = req.body;
+            const examType = await ExamTypesModel.getExamByID(req.params.examTypeId);
+
+            if(!examType){
+                const err = new Error('El tipo de examen no ha sido encontrado');
+                err.status = 404;
+                throw err;
+            }
+
+            const { name = examType.nombre, state = examType.estado } = req.body;
 
             if (!name || !state) {
                 const err = new Error('El nombre y el estado del tipo de examen son requeridos');
@@ -69,13 +77,13 @@ export class ExamTypesController {
                 throw err;
             }
 
-            const examType = await ExamTypesModel.updateExamType(
+            const examTypeToUpdate = await ExamTypesModel.updateExamType(
                 req.params.examTypeId, 
                 name, 
                 state
             );
 
-            if(examType.rowsAffected < 1){
+            if(examTypeToUpdate.rowsAffected < 1){
                 const err = new Error('No se pudo actualizar el tipo de examen');
                 err.status = 500;
                 throw err;

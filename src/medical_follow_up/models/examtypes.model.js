@@ -13,6 +13,16 @@ export class ExamTypesModel {
         return examTypes.recordset;
     }
 
+    static async getExamByID(examTypeId){
+        const examTypes = await conn.request().input('tipo_examen_id', examTypeId).query( `
+            SELECT *,
+                CASE WHEN nombre NOT IN ('Ingreso', 'Egreso') THEN 'Periodico' ELSE nombre END AS tipo_examen
+            FROM tipos_examenes WHERE tipo_examen_id = @tipo_examen_id`
+        );
+
+        return examTypes.recordset[0];
+    }
+
     static async createExamType(examType) {
         const result = await conn.request().input('nombre', examType).query(`
             INSERT INTO tipos_examenes (nombre, estado) VALUES (@nombre, 'Activo')
