@@ -7,7 +7,7 @@ export class ExamTypesModel {
         const examTypes = await conn.request().query( `
             SELECT *,
                 CASE WHEN nombre NOT IN ('Ingreso', 'Egreso') THEN 'Periodico' ELSE nombre END AS tipo_examen
-            FROM tipos_examenes`
+            FROM tipos_examenes ORDER BY nombre`
         );
 
         return examTypes.recordset;
