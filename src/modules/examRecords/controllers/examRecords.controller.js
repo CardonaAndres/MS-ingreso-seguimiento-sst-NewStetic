@@ -1,9 +1,16 @@
 import fs from 'fs/promises';
+import { ExamCheckListModel } from '../../medicalFollowUp/models/examChekList.model.js';
+import { getDaysBetweenDates } from '../utils/getDaysBetweenDates.js';
 
 export class ExamRecordsController {
     static async create(req, res, next){
         try {
-            const { name, checkListItemID } = req.body;
+            const { 
+                checkListItemID, 
+                state = 'Pendiente', 
+                dateMade =  new Date(),
+                expirationDate
+            } = req.body;
 
             if (req.file) req.body.PDF_url = `${String(process.env.SERVER_URL)}/uploads/${req.file.filename}`;
 
@@ -12,14 +19,22 @@ export class ExamRecordsController {
                err.status = 400;
                throw err;
             }
-            
-            // Valores por defecto
-            data.estado = data.estado || 'pendiente';
-            data.fecha_realizado = data.fecha_realizado || new Date();
 
-        } catch (err) {
-            console.error('Error al crear item:', err);
-            
+            const checkListItem = await ExamCheckListModel.getCheckListItemByID(checkListItemID);
+
+            if(!checkListItem){
+                const err = new Error('El item del CheckList NO ha sido encontrado');
+                err.status = 404;
+                throw err;
+            }
+
+            const daysBetweenDates = getDaysBetweenDates(dateMade, expirationDate);
+
+            return res.status(201).json({
+                message: 'Examen ingresado correctamente'
+            })
+
+        } catch (err) {    
             // Si hubo error y se subió archivo, eliminarlo
             if (req.file) {
                 try {
