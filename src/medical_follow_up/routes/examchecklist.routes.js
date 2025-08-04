@@ -1,10 +1,10 @@
 import express from "express";
-import { ExamCheckListController } from "../controllers/examcheklist.controller";
+import { ExamCheckListController } from "../controllers/examcheklist.controller.js";
 
 const router = express.Router();
 
-router.get('/', ExamCheckListController.getCheckList);
-router.post('/', ExamCheckListController.getCheckList);
-router.patch('/ChekListItemID', ExamCheckListController.getCheckList);
+router.get('/:userDocument', ExamCheckListController.getCheckList);
+router.post('/', ExamCheckListController.addCheckListItem);
+router.patch('/:CheckListItemByID', ExamCheckListController.updateCheckListItem);
 
 export default router;
