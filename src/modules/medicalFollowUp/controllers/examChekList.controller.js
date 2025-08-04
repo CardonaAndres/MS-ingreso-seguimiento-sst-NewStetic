@@ -1,6 +1,6 @@
 import { UserModel } from '../../users/models/user.model.js';
-import { ExamTypesModel } from '../models/examtypes.model.js';
-import { ExamCheckListModel } from "../models/examcheklist.model.js";
+import { ExamTypesModel } from '../models/examTypes.model.js';
+import { ExamCheckListModel } from "../models/examChekList.model.js";
 
 export class ExamCheckListController {
     static async getCheckList(req, res, next){

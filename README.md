@@ -57,35 +57,11 @@ Este microservicio garantiza:
 
 Para el correcto funcionamiento del microservicio, se deben definir las variables de entorno en un archivo `.env` ubicado en la raíz del proyecto.
 
-### 📄 Ejemplo de `.env`:
-
-```env
-# Puerto en el que se ejecuta el microservicio
-NODE_ENV=development
-
-# Client URLs
-SST_CLIENT=http://localhost:5001
-
-# URLs de servicios externos
-COLMEDICOS_API_URL=
-SOFTEXPERT_API_URL=
-
-PORT=
-
-JWT_SECRET=
-COOKIE_SECRET=
-
-#DB
-DB_USER=
-DB_PASSWORD=
-DB_SERVER=
-DB_PORT=
-```
 
 ---
 
 ## 👨‍💻 Autoría
 
-Desarrollado por el equipo TIC con **Andrés Cardona**
+Desarrollado por el equipo TIC de New Stetic con **Andrés Cardona**
 
 ---

@@ -1,5 +1,5 @@
 import express from "express";
-import { ExamCheckListController } from "../controllers/examcheklist.controller.js";
+import { ExamCheckListController } from "../controllers/examChekList.controller.js";
 
 const router = express.Router();
 

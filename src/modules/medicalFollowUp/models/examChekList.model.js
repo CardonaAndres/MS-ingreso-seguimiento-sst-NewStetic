@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import * as queries from '../utils/sql/examcheklist.queries.js';
-import { ConnDataBase } from '../../app/utils/conn.database.js';
+import * as queries from '../utils/examChekList.queries.js';
+import { ConnDataBase } from '../../../app/utils/conn.database.js';
 
 const conn = new ConnDataBase().connect(String(process.env.DB_SST_NAME));
 

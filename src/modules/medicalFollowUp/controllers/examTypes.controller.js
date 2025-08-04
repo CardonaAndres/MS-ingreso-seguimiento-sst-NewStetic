@@ -1,4 +1,4 @@
-import { ExamTypesModel } from "../models/examtypes.model.js";
+import { ExamTypesModel } from "../models/examTypes.model.js";
 
 export class ExamTypesController {
     static async getExamTypes(_, res, next) {

@@ -1,6 +1,6 @@
 import sql from 'mssql';
 import * as queries from '../utils/queries.js';
-import { ConnDataBase } from '../../app/utils/conn.database.js';
+import { ConnDataBase } from '../../../app/utils/conn.database.js';
 
 const conn = new ConnDataBase().connect(String(process.env.DB_COMP_NAME));
 
