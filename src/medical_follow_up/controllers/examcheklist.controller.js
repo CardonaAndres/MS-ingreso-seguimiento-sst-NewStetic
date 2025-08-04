@@ -87,7 +87,7 @@ export class ExamCheckListController {
 
     static async updateCheckListItem(req, res, next){
         try {
-            const checkListItem = await ExamCheckListModel.getCheckListItemByID(req.params.CheckListItemByID);
+            const checkListItem = await ExamCheckListModel.getCheckListItemByID(req.params.checkListItemID);
 
             if(!checkListItem){
                 const err = new Error('El examen asociado NO ha sido encontrado');
@@ -129,6 +129,16 @@ export class ExamCheckListController {
                 const err = new Error('El campo "estado" no es valido');
                 err.status = 400;
                 throw err;
+            }
+
+            const result = await ExamCheckListModel.updateCheckListItem(
+                examTypeId, isRequired, state, req.params.checkListItemID
+            );
+
+            if(!result){
+                const err = new Error('Hubo un error actualizar, por favor volver a intentarlo');
+                err.status = 400;
+                throw err;  
             }
 
             return res.status(200).json({

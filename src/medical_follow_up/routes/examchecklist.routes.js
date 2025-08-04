@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get('/:userDocument', ExamCheckListController.getCheckList);
 router.post('/', ExamCheckListController.addCheckListItem);
-router.patch('/:CheckListItemByID', ExamCheckListController.updateCheckListItem);
+router.patch('/:checkListItemID', ExamCheckListController.updateCheckListItem);
 
 export default router;

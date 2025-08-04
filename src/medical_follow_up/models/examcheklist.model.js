@@ -52,15 +52,18 @@ export class ExamCheckListModel {
         return result.rowsAffected[0] == 1
     }
 
-    static async updateCheckListItem(userDocument, examTypeId, isRequired){
+    static async updateCheckListItem(examTypeId, isRequired, state, checkListItemID){
         const result = await conn.request()
-         .input('userDocument', sql.NVarChar, userDocument)
-         .input('examTypeId', sql.NVarChar, examTypeId)
+         .input('checkListItemID', sql.Int, checkListItemID)
+         .input('examTypeId', sql.Int, examTypeId)
          .input('isRequired', sql.NVarChar, isRequired)
-         .query(`UPDATE checklist_examenes SET 
-            cc_empleado = @userDocument, 
+         .input('state', sql.NVarChar, state)
+         .query(`
+            UPDATE checklist_examenes SET 
             tipo_examen_id = @examTypeId, 
             es_requerido = @isRequired,
+            estado = @state
+            WHERE checklist_id = @checkListItemID
          `)
 
         return result.rowsAffected[0] == 1
