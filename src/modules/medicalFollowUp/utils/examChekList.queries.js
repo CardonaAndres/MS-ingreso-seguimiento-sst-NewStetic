@@ -149,5 +149,5 @@ SELECT
 FROM 
     checklist_examenes ce
     INNER JOIN tipos_examenes te ON ce.tipo_examen_id = te.tipo_examen_id
-WHERE ce.cc_empleado = @userDocument ORDER BY ce.checklist_id;
+WHERE ce.cc_empleado = @userDocument AND te.nombre NOT IN ('Ingreso', 'Egreso') ORDER BY ce.checklist_id;
 `
