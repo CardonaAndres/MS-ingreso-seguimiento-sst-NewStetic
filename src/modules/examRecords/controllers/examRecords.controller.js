@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import { validateDates } from '../utils/validateDates.js';
+import { ExamLogsModel } from '../models/examLogs.model.js';
 import { CheckListStates } from '../../../app/configs/config.js';
 import { ExamRecordsModel } from '../models/examRecords.model.js';
 import { ExamCheckListModel } from '../../medicalFollowUp/models/examChekList.model.js';
@@ -91,11 +92,18 @@ export class ExamRecordsController {
                 totalDays: frequencyInDays
             });
 
-            if(!result){
+            if(!result.success){
                 const err = new Error('Hubo un error al registrar el examen, por favor volver a intentarlo');
                 err.status = 400;
                 throw err;
             }
+
+            await ExamLogsModel.create({
+                checkListItemID: result.id,
+                action: 'CREACIÓN',
+                observations: `${observations || 'Sin observaciones'} | el estado hasta el momento era: ${state}`,
+                responsibleUser: req.user.displayName
+            })
 
             return res.status(201).json({
                 message: 'Examen ingresado correctamente'

@@ -11,5 +11,6 @@ export const CheckListStates = [
   'Expirado',
   'Programado',
   'No requerido',
-  'En espera'
+  'En espera',
+  'Eliminado'
 ];

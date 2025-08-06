@@ -67,8 +67,15 @@ export class ExamRecordsModel {
                 @state,
                 @checkListItemID
             )
+
+            SELECT SCOPE_IDENTITY() AS checklist_item_id;
          `);
 
-        return result.rowsAffected[0] == 1
+        console.log(result.recordset) 
+
+        return {
+            success: result.rowsAffected[0] == 1,
+            id: result.recordset[0].checklist_item_id
+        }
     }
 }
