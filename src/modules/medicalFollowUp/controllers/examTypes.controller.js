@@ -1,9 +1,15 @@
 import { ExamTypesModel } from "../models/examTypes.model.js";
 
 export class ExamTypesController {
-    static async getExamTypes(_, res, next) {
+    static async getExamTypes(req, res, next) {
         try {
-            const examTypes = await ExamTypesModel.examTypes();
+            let addToQuery;
+
+            req.query.condition === 'actives' 
+             ? addToQuery = "WHERE estado = 'Activo'"
+             : addToQuery = ''
+
+            const examTypes = await ExamTypesModel.examTypes(addToQuery);
 
             return res.status(200).json({
                 message : 'Todos los tipos de examenes registrados',
