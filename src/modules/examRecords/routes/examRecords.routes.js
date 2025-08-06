@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/:checkListItemID/', ExamRecordsController.getExamRecords);
 router.post('/', upload.single('document'), ExamRecordsController.create);
+router.patch('/:checkListItemID', upload.single('document'), ExamRecordsController.update);
 
 export default router;

@@ -121,4 +121,16 @@ export class ExamRecordsController {
             next(err);
         }
     }
+
+    static async update(req, res, next){
+        try {
+       
+            return res.status(200).json({
+                message: 'Actualizado correctamente'
+            });
+
+        } catch (err) {
+            next(err);
+        }
+    }
 }
