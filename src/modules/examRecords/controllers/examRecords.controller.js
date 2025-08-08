@@ -1,9 +1,14 @@
+import path from 'path';
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
 import { validateDates } from '../utils/validateDates.js';
 import { ExamLogsModel } from '../models/examLogs.model.js';
 import { CheckListStates } from '../../../app/configs/config.js';
 import { ExamRecordsModel } from '../models/examRecords.model.js';
 import { ExamCheckListModel } from '../../medicalFollowUp/models/examChekList.model.js';
+
+const __filename = fileURLToPath(import.meta.url); 
+const __dirname = path.dirname(__filename); 
 
 export class ExamRecordsController {
     static async getExamRecords(req, res, next){
@@ -101,9 +106,9 @@ export class ExamRecordsController {
             await ExamLogsModel.create({
                 checkListItemID: result.id,
                 action: 'CREACIÓN',
-                observations: `${observations || 'Sin observaciones'} | el estado hasta el momento era: ${state}`,
+                observations: `${observations||'Sin observaciones'} | el estado hasta el momento era: '${state}'`,
                 responsibleUser: req.user.displayName
-            })
+            });
 
             return res.status(201).json({
                 message: 'Examen ingresado correctamente'
@@ -124,12 +129,101 @@ export class ExamRecordsController {
 
     static async update(req, res, next){
         try {
+            const examItem = await ExamRecordsModel.getExamRecordByID(req.params.checkListItemID);
+
+            if(!examItem){
+                const err = new Error('El registro no ha sido encontrado');
+                err.status = 404;
+                throw err; 
+            }
+
+            const { 
+                dateMade = examItem.fecha_realizado,
+                expirationDate = examItem.fecha_vencimiento,
+                observations = examItem.observaciones || "Sin observaciones",
+                updateReason,
+                state = examItem.estado,
+                frequencyInDays = examItem.frecuencia_dias,
+            } = req.body;
+
+            if(!CheckListStates.includes(state)){
+                const err = new Error('Estado NO válido');
+                err.status = 400;
+                throw err;
+            }
+
+            validateDates(dateMade, expirationDate);
+
+            if(!frequencyInDays || parseInt(frequencyInDays) < 1){
+                const err = new Error('Frecuencia en días incorrecta');
+                err.status = 400;
+                throw err;
+            }
+
+            if(!updateReason || updateReason.trim().length < 5){
+                const err = new Error('La razón de actualización es obligatoria');
+                err.status = 400;
+                throw err;
+            }
+
+            if(req.file){
+                req.body.PDF_url = `${String(process.env.SERVER_URL)}/uploads/${req.file.filename}`;
+
+                const oldURLPath = (examItem.PDF_url && examItem.PDF_url !== 'SIN PDF')
+                 ? path.join(__dirname, '..', '..', '..', 'uploads', examItem.PDF_url.split('/').pop()) 
+                 : null;
+
+                if (oldURLPath) {
+                    try {
+                        await fs.access(oldURLPath); 
+                        await fs.unlink(oldURLPath); 
+                    } catch (err) {
+                        console.error("No se pudo eliminar la imagen anterior:", err.message);
+                    }
+                }
+
+            } else {
+                (examItem.PDF_url && examItem.PDF_url !== 'SIN PDF') 
+                ? req.body.PDF_url = examItem.PDF_url 
+                : req.body.PDF_url = 'SIN PDF';
+            }
+
+            const result = await ExamRecordsModel.update({
+                checkListItemID: req.params.checkListItemID, 
+                dateMade,
+                expirationDate,
+                state, 
+                observations,
+                PDF_url: req.body.PDF_url,
+                totalDays: frequencyInDays
+            });
+
+            if(!result){
+                const err = new Error('No se pudo actualizar, volver a intentar por favor');
+                err.status = 400;
+                throw err;
+            }
+
+            await ExamLogsModel.create({
+                checkListItemID: req.params.checkListItemID,
+                action: 'ACTUALIZACIÓN',
+                observations: `Motivo de actualización: ${updateReason}`,
+                responsibleUser: req.user.displayName
+            });
        
             return res.status(200).json({
                 message: 'Actualizado correctamente'
             });
 
         } catch (err) {
+            if (req.file) {
+                try {
+                    await fs.unlink(req.file.path);
+                } catch (unlinkError) {
+                    console.error('Error al eliminar archivo:', unlinkError);
+                }
+            }
+            
             next(err);
         }
     }

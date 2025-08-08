@@ -30,6 +30,17 @@ export class ExamRecordsModel {
         }
     }
 
+    static async getExamRecordByID(examItemID){
+        const results = await conn.request()
+         .input('examItemID', sql.Int, examItemID)
+         .query(`
+            SELECT * FROM checklist_items
+            WHERE checklist_item_id = @examItemID
+         `);
+
+        return results.recordset[0];
+    }
+
     static async create(itemInfo){
         const { 
             checkListItemID, 
@@ -71,11 +82,42 @@ export class ExamRecordsModel {
             SELECT SCOPE_IDENTITY() AS checklist_item_id;
          `);
 
-        console.log(result.recordset) 
-
         return {
             success: result.rowsAffected[0] == 1,
             id: result.recordset[0].checklist_item_id
         }
+    }
+
+    static async update(itemInfo){
+        const { 
+            checkListItemID, 
+            dateMade =  new Date(),
+            expirationDate,
+            state = 'Pendiente', 
+            observations = 'Sin observaciones',
+            PDF_url,
+            totalDays
+        } = itemInfo;
+
+       const result = await conn.request()
+        .input('checkListItemID', sql.Int, checkListItemID)
+        .input('observations', sql.VarChar, observations)
+        .input('dateMade', sql.Date, dateMade)
+        .input('expirationDate', sql.Date, expirationDate)
+        .input('totalDays', sql.Int, totalDays) 
+        .input('PDF_url', sql.VarChar, PDF_url)
+        .input('state', sql.NVarChar, state)
+        .query(`
+            UPDATE checklist_items
+            SET observaciones = @observations,
+                fecha_realizado = @dateMade,
+                fecha_vencimiento = @expirationDate,
+                frecuencia_dias = @totalDays,
+                PDF_url = @PDF_url,
+                estado = @state
+            WHERE checklist_item_id = @checkListItemID
+        `);
+        
+        return result.rowsAffected[0] == 1
     }
 }
