@@ -227,4 +227,44 @@ export class ExamRecordsController {
             next(err);
         }
     }
+
+    static async delete(req, res, next){
+        try {
+            const examItem = await ExamRecordsModel.getExamRecordByID(req.params.checkListItemID);
+
+            if(!examItem){
+                const err = new Error('El registro no ha sido encontrado');
+                err.status = 404;
+                throw err; 
+            }
+
+            if(!req.body.deletionReason || req.body.deletionReason.trim().length < 5){
+                const err = new Error('Por favor, dar el motivo de eliminación');
+                err.status = 400;
+                throw err; 
+            }
+
+            const result = await ExamRecordsModel.delete(req.params.checkListItemID);
+
+            if(!result){
+                const err = new Error('No se pudo eliminar, volver a intentar por favor');
+                err.status = 400;
+                throw err;
+            }
+
+            await ExamLogsModel.create({
+                checkListItemID: req.params.checkListItemID,
+                action: 'ELIMINACIÓN',
+                observations: `Motivo de actualización: ${req.body.deletionReason}`,
+                responsibleUser: req.user.displayName
+            });
+
+            return res.status(200).json({
+                message: 'Eliminado correctamente'
+            });
+
+        } catch (err) {
+            next(err);
+        }
+    }
 }

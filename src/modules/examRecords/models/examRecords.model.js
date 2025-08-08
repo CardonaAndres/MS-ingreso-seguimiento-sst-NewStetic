@@ -12,6 +12,7 @@ export class ExamRecordsModel {
          .query(`
             SELECT * FROM checklist_items 
             WHERE checklist_id = @checkListItemID
+            AND estado NOT IN ('Eliminado')
             ORDER BY checklist_item_id
             OFFSET (@page - 1) * @limit ROWS 
             FETCH NEXT @limit ROWS ONLY;
@@ -20,8 +21,8 @@ export class ExamRecordsModel {
         const resultTotalExamRecords = await conn.request()
          .input('checkListItemID', sql.Int, checkListItemID)
          .query(`
-            SELECT COUNT(*) AS totalExamRecords
-            FROM checklist_items WHERE checklist_id = @checkListItemID
+            SELECT COUNT(*) AS totalExamRecords FROM checklist_items 
+            WHERE checklist_id = @checkListItemID AND estado NOT IN ('Eliminado')
          `);
 
         return { 
@@ -119,5 +120,16 @@ export class ExamRecordsModel {
         `);
         
         return result.rowsAffected[0] == 1
+    }
+
+    static async delete(itemID){
+        const result = await conn.request()
+        .input('checkListItemID', sql.Int, itemID)
+        .query(`
+            UPDATE checklist_items SET estado = 'Eliminado'
+            WHERE checklist_item_id = @checkListItemID
+        `);
+
+        return result.rowsAffected[0] == 1;
     }
 }
