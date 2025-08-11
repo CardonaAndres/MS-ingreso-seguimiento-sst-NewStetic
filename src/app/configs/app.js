@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import staffRouter from '../../modules/users/routes/users.routes.js'
 import examTypesRouter from '../../modules/medicalFollowUp/routes/examTypes.routes.js';
 import examRecords from '../../modules/examRecords/routes/examRecords.routes.js';
+import examLogs from '../../modules/examRecords/routes/examLogs.routes.js';
 import examChekListRouter from '../../modules/medicalFollowUp/routes/examCheckList.routes.js';
 import { errorHandler } from '../middlewares/error.handler.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
@@ -33,6 +34,7 @@ app.use('/API-SST/v1/staff', authMiddleware, staffRouter);
 app.use('/API-SST/v1/examtypes', authMiddleware, examTypesRouter);
 app.use('/API-SST/v1/exam-checklist', authMiddleware, examChekListRouter);
 app.use('/API-SST/v1/exam-records', authMiddleware, examRecords);
+app.use('/API-SST/v1/exam-logs', authMiddleware, examLogs);
 
 app.use(errorHandler);
 

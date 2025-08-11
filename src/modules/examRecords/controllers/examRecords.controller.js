@@ -106,7 +106,7 @@ export class ExamRecordsController {
             await ExamLogsModel.create({
                 checkListItemID: result.id,
                 action: 'CREACIÓN',
-                observations: `${observations||'Sin observaciones'} | el estado hasta el momento era: '${state}'`,
+                observations: `Observaciones: ${observations||'Sin observaciones'} | el estado hasta el momento era: '${state}'`,
                 responsibleUser: req.user.displayName
             });
 
@@ -207,7 +207,7 @@ export class ExamRecordsController {
             await ExamLogsModel.create({
                 checkListItemID: req.params.checkListItemID,
                 action: 'ACTUALIZACIÓN',
-                observations: `Motivo de actualización: ${updateReason}`,
+                observations:`Observaciones: ${observations||'Sin observaciones'} | Motivo de actualización dado: ${updateReason}`,
                 responsibleUser: req.user.displayName
             });
        
@@ -255,7 +255,7 @@ export class ExamRecordsController {
             await ExamLogsModel.create({
                 checkListItemID: req.params.checkListItemID,
                 action: 'ELIMINACIÓN',
-                observations: `Motivo de actualización: ${req.body.deletionReason}`,
+                observations: `Motivo de eliminación: ${req.body.deletionReason}`,
                 responsibleUser: req.user.displayName
             });
 
