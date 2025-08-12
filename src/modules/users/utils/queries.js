@@ -442,7 +442,9 @@ export const usersByProperties = `
         f200_apellido1 LIKE @property OR
         f200_apellido2 LIKE @property OR
         f015_email LIKE @property OR
-        CARGOS.C0763_DESCRIPCION LIKE @property
+        CARGOS.C0763_DESCRIPCION LIKE @property OR
+        (f200_nombres + ' ' + f200_apellido1 + ' ' + ISNULL(f200_apellido2, '')) LIKE @property OR
+        (CASE WHEN c0540_id_cia = 1 THEN 'New Stetic' ELSE 'Temporal' END) LIKE @property
 	)
 
     ORDER BY f200_nombres + ' ' + f200_apellido1 + ' ' + f200_apellido2
@@ -859,7 +861,9 @@ export const usersIdlesByProperties = `
             f200_apellido1 LIKE @property OR
             f200_apellido2 LIKE @property OR
             f015_email LIKE @property OR
-            CARGOS.C0763_DESCRIPCION LIKE @property
+            CARGOS.C0763_DESCRIPCION LIKE @property OR
+            (f200_nombres + ' ' + f200_apellido1 + ' ' + ISNULL(f200_apellido2, '')) LIKE @property OR
+            (CASE WHEN c0540_id_cia = 1 THEN 'New Stetic' ELSE 'Temporal' END) LIKE @property
         )
 
     ORDER BY f200_nombres + ' ' + f200_apellido1 + ' ' + f200_apellido2
