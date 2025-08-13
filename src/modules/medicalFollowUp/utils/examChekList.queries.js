@@ -14,6 +14,7 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Completado', 'Aprobado')
+            AND ci.estado NOT IN ('Eliminado')
             AND (ci.fecha_vencimiento IS NULL OR ci.fecha_vencimiento > GETDATE())
         ) THEN 'Bien'
         
@@ -23,6 +24,7 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Completado', 'Aprobado')
+            AND ci.estado NOT IN ('Eliminado')
             AND ci.fecha_vencimiento IS NOT NULL
             AND ci.fecha_vencimiento > GETDATE() 
             AND DATEDIFF(DAY, GETDATE(), ci.fecha_vencimiento) <= 30
@@ -34,11 +36,13 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Completado', 'Aprobado')
+            AND ci.estado NOT IN ('Eliminado')
         ) AND NOT EXISTS (
             SELECT 1 
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Completado', 'Aprobado')
+            AND ci.estado NOT IN ('Eliminado')
             AND (ci.fecha_vencimiento IS NULL OR ci.fecha_vencimiento > GETDATE())
         ) THEN 'Vencido'
         
@@ -48,10 +52,12 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Procesando', 'En revisión', 'Programado', 'En espera')
+            AND ci.estado NOT IN ('Eliminado')
             AND ci.checklist_item_id = (
                 SELECT TOP 1 ci2.checklist_item_id
                 FROM checklist_items ci2
                 WHERE ci2.checklist_id = ce.checklist_id
+                AND ci.estado NOT IN ('Eliminado')
                 ORDER BY 
                     CASE WHEN ci2.fecha_realizado IS NOT NULL THEN ci2.fecha_realizado
                          WHEN ci2.fecha_vencimiento IS NOT NULL THEN ci2.fecha_vencimiento
@@ -66,10 +72,12 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Rechazado', 'Observado', 'Expirado')
+            AND ci.estado NOT IN ('Eliminado')
             AND ci.checklist_item_id = (
                 SELECT TOP 1 ci2.checklist_item_id
                 FROM checklist_items ci2
                 WHERE ci2.checklist_id = ce.checklist_id
+                AND ci.estado NOT IN ('Eliminado')
                 ORDER BY 
                     CASE WHEN ci2.fecha_realizado IS NOT NULL THEN ci2.fecha_realizado
                          WHEN ci2.fecha_vencimiento IS NOT NULL THEN ci2.fecha_vencimiento
@@ -84,10 +92,12 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado = 'No requerido'
+            AND ci.estado NOT IN ('Eliminado')
             AND ci.checklist_item_id = (
                 SELECT TOP 1 ci2.checklist_item_id
                 FROM checklist_items ci2
                 WHERE ci2.checklist_id = ce.checklist_id
+                AND ci.estado NOT IN ('Eliminado')
                 ORDER BY 
                     CASE WHEN ci2.fecha_realizado IS NOT NULL THEN ci2.fecha_realizado
                          WHEN ci2.fecha_vencimiento IS NOT NULL THEN ci2.fecha_vencimiento
@@ -102,10 +112,12 @@ SELECT
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
             AND ci.estado IN ('Cancelado', 'Reprogramado')
+            AND ci.estado NOT IN ('Eliminado')
             AND ci.checklist_item_id = (
                 SELECT TOP 1 ci2.checklist_item_id
                 FROM checklist_items ci2
                 WHERE ci2.checklist_id = ce.checklist_id
+                AND ci.estado NOT IN ('Eliminado')
                 ORDER BY 
                     CASE WHEN ci2.fecha_realizado IS NOT NULL THEN ci2.fecha_realizado
                          WHEN ci2.fecha_vencimiento IS NOT NULL THEN ci2.fecha_vencimiento
@@ -119,6 +131,7 @@ SELECT
             SELECT 1 
             FROM checklist_items ci
             WHERE ci.checklist_id = ce.checklist_id
+            AND ci.estado NOT IN ('Eliminado')
         ) THEN 'Pendiente'
         
         -- 9. Sin información si no hay registros en checklist_items
@@ -128,11 +141,12 @@ SELECT
     -- Información adicional útil
     (SELECT COUNT(*) 
      FROM checklist_items ci 
-     WHERE ci.checklist_id = ce.checklist_id) AS total_items,
+     WHERE ci.checklist_id = ce.checklist_id AND ci.estado NOT IN ('Eliminado')) AS total_items,
      
     (SELECT TOP 1 ci.estado
      FROM checklist_items ci
      WHERE ci.checklist_id = ce.checklist_id
+     AND ci.estado NOT IN ('Eliminado')
      ORDER BY 
          CASE WHEN ci.fecha_realizado IS NOT NULL THEN ci.fecha_realizado
               WHEN ci.fecha_vencimiento IS NOT NULL THEN ci.fecha_vencimiento
@@ -143,6 +157,7 @@ SELECT
      FROM checklist_items ci
      WHERE ci.checklist_id = ce.checklist_id
      AND ci.estado IN ('Completado', 'Aprobado')
+     AND ci.estado NOT IN ('Eliminado')
      AND ci.fecha_vencimiento IS NOT NULL
      ORDER BY ci.fecha_vencimiento ASC) AS proxima_fecha_vencimiento
 
