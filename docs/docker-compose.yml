@@ -1,0 +1,19 @@
+services:
+  staff:
+    build: ./staff
+    volumes:
+      - ./staff:/app
+      - /app/node_modules
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./staff/.env
+    command: node --watch src/index.js
+    extra_hosts:
+      - "domain:XX.X.X.XX"
+    networks:
+      - staff-network
+      
+networks:
+  staff-network:
+    driver: bridge

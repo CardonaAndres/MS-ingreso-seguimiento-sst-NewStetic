@@ -28,8 +28,12 @@ export class ConnDataBase {
                         }
                     });
 
+                    pool.on('connect', () => console.log('✓ Conexión exitosa a COMPESACIONES'));
+                    pool.on('error', (err) => console.error('Error en la conexión a COMPESACIONES:', err.message));
+
                     this.pool = pool.connect();
                     return pool;
+
                 } catch (err) {
                     console.error('Error al conectar a la base de datos:', err);
                     throw err;
@@ -48,8 +52,12 @@ export class ConnDataBase {
                         }
                     });
 
+                    pool.on('connect', () => console.log('✓ Conexión exitosa a SST'));
+                    pool.on('error', (err) => console.error('Error en la conexión a SST: ', err.message));
+
                     this.pool = pool.connect();
                     return pool;
+
                 } catch (err) {
                     console.error('Error al conectar a la base de datos:', err);
                     throw err;
@@ -59,9 +67,5 @@ export class ConnDataBase {
                 console.log(`La base de datos ${databaseName} no está soportada.`);
                 return null;
         }
-    }
-
-    close() {
-
     }
 }
