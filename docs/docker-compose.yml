@@ -12,8 +12,23 @@ services:
     extra_hosts:
       - "domain:XX.X.X.XX"
     networks:
-      - staff-network
+      - shared-network
+
+  reports-manager:
+    build: ./reports-manager
+    volumes:
+      - ./reports-manager:/app
+      - /app/node_modules
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./reports-manager/.env
+    command: npm run dev
+    extra_hosts:
+      - "domain:XX.X.X.XX"
+    networks:
+      - shared-network
       
 networks:
-  staff-network:
+  shared-network:
     driver: bridge
