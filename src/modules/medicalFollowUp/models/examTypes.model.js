@@ -1,3 +1,4 @@
+import sql from 'mssql';
 import { ConnDataBase } from '../../../app/utils/conn.database.js';
 
 const conn = new ConnDataBase().connect(String(process.env.DB_SST_NAME));
@@ -18,6 +19,16 @@ export class ExamTypesModel {
             SELECT *,
                 CASE WHEN nombre NOT IN ('Ingreso', 'Egreso') THEN 'Periodico' ELSE nombre END AS tipo_examen
             FROM tipos_examenes WHERE tipo_examen_id = @tipo_examen_id`
+        );
+
+        return examTypes.recordset[0];
+    }
+
+    static async getExamByName(name) {
+        const examTypes = await conn.request().input('name', sql.NVarChar, name).query( `
+            SELECT *,
+                CASE WHEN nombre NOT IN ('Ingreso', 'Egreso') THEN 'Periodico' ELSE nombre END AS tipo_examen
+            FROM tipos_examenes WHERE nombre = @name`
         );
 
         return examTypes.recordset[0];
