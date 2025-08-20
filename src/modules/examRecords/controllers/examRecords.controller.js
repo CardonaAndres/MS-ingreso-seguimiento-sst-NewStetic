@@ -46,6 +46,24 @@ export class ExamRecordsController {
         }
     }
 
+    static async getIncomeOrEgressExamsRecords(req, res, next){
+        try {
+
+            const exams = await ExamRecordsModel.getIncomeOrEgressExamRecords(
+                req.params.cc, 
+                ` AND tpem.nombre = '${(req.query?.typeExam || 'income') === 'income' ? 'Ingreso' : 'Egreso'}'`
+            );
+
+            return res.status(200).json({
+                message: 'Tarea exitosa',
+                exams
+            });
+            
+        } catch (err) {
+            next(err);
+        }
+    }
+
     static async create(req, res, next){
         try {
             const { 
@@ -150,6 +168,12 @@ export class ExamRecordsController {
             
             if(!user[0]){
                 const err = new Error('colaborador NO encontrado');
+                err.status = 400;
+                throw err;  
+            }
+
+            if(req.query.typeExam && !['income', 'egress'].includes(req.query.typeExam)){
+                const err = new Error('Tipo de examen inválido');
                 err.status = 400;
                 throw err;  
             }
@@ -330,19 +354,6 @@ export class ExamRecordsController {
                 }
             }
             
-            next(err);
-        }
-    }
-
-    static async updateIncomeOrEgress(req, res, next){
-        try {
-
-
-            return res.status(200).json({
-                message: 'Tarea exitosa',
-            });
-
-        } catch (err) {
             next(err);
         }
     }
