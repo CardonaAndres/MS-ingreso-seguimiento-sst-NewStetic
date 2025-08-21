@@ -5,9 +5,10 @@ import { ExamCheckListModel } from "../models/examChekList.model.js";
 export class ExamCheckListController {
     static async getCheckList(req, res, next){
         try {
-            const user = await UserModel.getUsersByProperties(req.params.userDocument)
+            const userActive = await UserModel.getUsersByProperties(req.params.userDocument)
+            const userInActive = await UserModel.getUsersIdlesByProperties(req.params.userDocument);
 
-            if(!user[0]){
+            if(!userActive[0] && !userInActive[0]){
                 const err = new Error('colaborador NO encontrado');
                 err.status = 400;
                 throw err;  
@@ -20,7 +21,8 @@ export class ExamCheckListController {
 
             return res.status(200).json({
                 message : 'Lista de tipos de examenes del colaborador',
-                examsCheckList : checkListFilter
+                examsCheckList : checkListFilter,
+                user: userActive ? userActive : userInActive
             });
 
         } catch (err) {
