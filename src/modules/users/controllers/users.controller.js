@@ -106,4 +106,21 @@ export class UserController {
             next(err);
         }
     }
+
+    static async getUsersToReport(req, res, next){
+        try {
+
+            const { 
+                
+            } = req.query;
+
+            return res.status(200).json({
+                message: 'Tarea exitosa',
+                users: []
+            })
+
+        } catch (err) {
+            next(err);
+        }
+    }
 }

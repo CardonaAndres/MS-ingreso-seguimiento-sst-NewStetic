@@ -8,5 +8,6 @@ router.get('/idles', UserController.getUsersIdlesPaginate);
 router.get('/:property', UserController.getUsersByProperties);
 router.get('/idles/:property', UserController.getUsersIdlesByProperties);
 router.get('/history/:docNumber', UserController.getWorkHistoryWork);
+router.get('/to-reports', UserController.getUsersToReport);
 
 export default router;
