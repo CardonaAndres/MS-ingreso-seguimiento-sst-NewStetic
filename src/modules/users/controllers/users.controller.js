@@ -106,45 +106,4 @@ export class UserController {
             next(err);
         }
     }
-
-    static async getUsersToReport(req, res, next){
-        try {
-            let addToQuery = ` `;
-            const { collaboratorsStatus, collaboratorType } = req.query;
-            const collaborators = req.query.collaborators.split(',') || [];
-
-            if(!collaboratorsStatus && !collaboratorType){
-                const err = new Error('Debe enviar al menos un parámetro');
-                err.status = 400;
-                throw err;
-            }
-
-            if(collaborators.length > 0) 
-                addToQuery += ` AND t200.f200_nit IN (${collaborators.map(c => `'${c}'`).join(', ')}) `;
-
-            if(collaboratorsStatus && String(collaboratorsStatus).toUpperCase() === 'ACTIVO')
-                addToQuery += ` AND [w0550_contratos].c0550_ind_estado = 1 `;
-
-            if(collaboratorsStatus && String(collaboratorsStatus).toUpperCase() === 'INACTIVO')
-                addToQuery += ` AND [w0550_contratos].c0550_ind_estado != 1 `;
-
-            if(collaboratorType && String(collaboratorType).toUpperCase() === 'NEW STETIC')
-                addToQuery += ` AND (CASE WHEN c0540_id_cia = 1 THEN 'New Stetic' ELSE 'Temporal' END) LIKE '%New Stetic%'`;
-
-            if(collaboratorType && String(collaboratorType).toUpperCase() === 'TEMPORAL')
-                addToQuery += ` AND (CASE WHEN c0540_id_cia = 1 THEN 'New Stetic' ELSE 'Temporal' END) LIKE '%Temporal%'`;
-
-            addToQuery += ` ORDER BY f200_nombres + ' ' + f200_apellido1 + ' ' + f200_apellido2`;
-
-            const users = await UserModel.getUsersToReport(addToQuery);
-
-            return res.status(200).json({
-                message: 'Tarea exitosa',
-                users
-            });
-
-        } catch (err) { 
-            next(err);
-        }
-    }
 }

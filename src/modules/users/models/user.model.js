@@ -58,13 +58,4 @@ export class UserModel {
         }
     }
 
-    static async getUsersToReport(addToQuery){
-        const result = await conn.request()
-        .query(`
-            ${queries.usersToReport}
-            ${addToQuery}
-        `)
-
-        return result.recordset
-    }
 }
