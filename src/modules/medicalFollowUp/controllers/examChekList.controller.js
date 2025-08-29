@@ -1,5 +1,6 @@
 import { UserModel } from '../../users/models/user.model.js';
 import { ExamTypesModel } from '../models/examTypes.model.js';
+import { throwError } from '../../../app/utils/throw.error.js';
 import { ExamCheckListModel } from "../models/examChekList.model.js";
 
 export class ExamCheckListController {
@@ -8,11 +9,7 @@ export class ExamCheckListController {
             const userActive = await UserModel.getUsersByProperties(req.params.userDocument)
             const userInActive = await UserModel.getUsersIdlesByProperties(req.params.userDocument);
 
-            if(!userActive[0] && !userInActive[0]){
-                const err = new Error('colaborador NO encontrado');
-                err.status = 400;
-                throw err;  
-            }
+            if(!userActive[0] && !userInActive[0]) throwError('colaborador NO encontrado', 400);
 
             const examsCheckList = await ExamCheckListModel.getCheckList(req.params.userDocument);
             const checkListFilter = examsCheckList.filter(
@@ -34,49 +31,25 @@ export class ExamCheckListController {
         try {
             const { userDocument, examTypeId, isRequired } = req.body;
 
-            if(!userDocument || !examTypeId || !isRequired){
-                const err = new Error('Faltan campos obligatorios');
-                err.status = 400;
-                throw err;
-            }
+            if(!userDocument || !examTypeId || !isRequired) throwError('Faltan campos obligatorios', 400);
 
-            if(!['SI', 'NO'].includes(isRequired)){
-                const err = new Error('El campo "es requerido" no es valido');
-                err.status = 400;
-                throw err;
-            }
+            if(!['SI', 'NO'].includes(isRequired)) throwError('El campo "es requerido" no es valido', 400);
 
             const user = await UserModel.getUsersByProperties(userDocument);
 
-            if(!user[0]){
-                const err = new Error('colaborador NO encontrado');
-                err.status = 400;
-                throw err;  
-            }
-
+            if(!user[0]) throwError('colaborador NO encontrado', 404);
+        
             const examType = await ExamTypesModel.getExamByID(examTypeId);
 
-            if(!examType){
-                const err = new Error('tipo de examen NO encontrado');
-                err.status = 400;
-                throw err;  
-            }
+            if(!examType) throwError('tipo de examen NO encontrado', 404);
 
             const hasUserExam = await ExamCheckListModel.hasUserExamInChecklist(examTypeId, userDocument);
 
-            if(hasUserExam){
-                const err = new Error('El colaborador ya tiene este examen asignado');
-                err.status = 400;
-                throw err;  
-            }
-            
+            if(hasUserExam) throwError('El colaborador ya tiene este examen asignado', 400);
+
             const result = await ExamCheckListModel.addCheckListItem(userDocument, examTypeId, isRequired);
 
-            if(!result){
-                const err = new Error('Hubo un error asignar el examen, por favor volver a intentarlo');
-                err.status = 400;
-                throw err;  
-            }
+            if(!result) throwError('Hubo un error asignar el examen, por favor volver a intentarlo', 400);
 
             return res.status(201).json({
                 message: 'Examen asignado correctamente al colaborador.'
@@ -91,11 +64,7 @@ export class ExamCheckListController {
         try {
             const checkListItem = await ExamCheckListModel.getCheckListItemByID(req.params.checkListItemID);
 
-            if(!checkListItem){
-                const err = new Error('El examen asociado NO ha sido encontrado');
-                err.status = 404;
-                throw err;
-            }
+            if(!checkListItem) throwError('El examen asociado NO ha sido encontrado', 404);
 
             const { 
                 examTypeId = checkListItem.tipo_examen_id,
@@ -105,43 +74,23 @@ export class ExamCheckListController {
 
             const examType = await ExamTypesModel.getExamByID(examTypeId);
 
-            if(!examType){
-                const err = new Error('El tipo examen NO ha sido encontrado');
-                err.status = 404;
-                throw err;
-            }
+            if(!examType) throwError('El tipo examen NO ha sido encontrado', 404);
 
             if(examTypeId !== checkListItem.tipo_examen_id){
                 const hasUserExam = await ExamCheckListModel.hasUserExamInChecklist(examTypeId, userDocument);
-
-                if(hasUserExam){
-                    const err = new Error('El colaborador ya tiene este examen asignado');
-                    err.status = 409;
-                    throw err;  
-                }
+                if(hasUserExam) throwError('El colaborador ya tiene este examen asignado', 409);
             }
 
-            if(!['SI', 'NO'].includes(isRequired)){
-                const err = new Error('El campo "es requerido" no es valido');
-                err.status = 400;
-                throw err;
-            }
+            if(!['SI', 'NO'].includes(isRequired)) throwError('El campo "es requerido" no es valido', 400);
 
-            if(!['Activo', 'Inactivo'].includes(state)){
-                const err = new Error('El campo "estado" no es valido');
-                err.status = 400;
-                throw err;
-            }
+            if(!['Activo', 'Inactivo'].includes(state)) throwError('El campo "estado" no es valido', 400);
 
             const result = await ExamCheckListModel.updateCheckListItem(
                 examTypeId, isRequired, state, req.params.checkListItemID
             );
 
-            if(!result){
-                const err = new Error('Hubo un error actualizar, por favor volver a intentarlo');
-                err.status = 400;
-                throw err;  
-            }
+            if(!result) 
+                throwError('Hubo un error actualizar, por favor volver a intentarlo', 400);
 
             return res.status(200).json({
                 message : 'Examen asociado actualizado correctamente'

@@ -1,4 +1,5 @@
 import { UserModel } from '../models/user.model.js';
+import { throwError } from '../../../app/utils/throw.error.js';
 
 export class UserController {
     static async getUsersByProperties(req, res, next){
@@ -6,11 +7,7 @@ export class UserController {
             const { property } = req.params;
             const users = await UserModel.getUsersByProperties(property);
 
-            if(users.length < 1){
-                const err = new Error('No hay resultados');
-                err.status = 404;
-                throw err
-            }
+            if(users.length < 1) throwError('No hay resultados', 404);
 
             return res.status(200).json({
                 message : 'Usuario encontrado correctamente',
@@ -49,11 +46,7 @@ export class UserController {
             const { property } = req.params;
             const users = await UserModel.getUsersIdlesByProperties(property);
 
-            if(users.length < 1){
-                const err = new Error('No hay resultados');
-                err.status = 404;
-                throw err
-            }
+            if(users.length < 1) throwError('No hay resultados', 404);
 
             return res.status(200).json({
                 message : 'Usuario encontrado correctamente',
@@ -90,12 +83,8 @@ export class UserController {
         try {
             const { docNumber } = req.params;
             const { userWorkHistory } = await UserModel.getUserWorkHistory(docNumber);
-            
-            if(userWorkHistory.length < 1){
-                const err = new Error('El usuario con ese número de documento no existe');
-                err.status = 404;
-                throw err
-            }
+
+            if(userWorkHistory.length < 1) throwError('El usuario con ese número de documento no existe', 404);
 
             return res.status(200).json({
                 message : 'Trayectorial laboral del usuario',

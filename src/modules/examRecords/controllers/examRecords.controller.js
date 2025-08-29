@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { validateDates } from '../utils/validateDates.js';
 import { ExamLogsModel } from '../models/examLogs.model.js';
 import { UserModel } from '../../users/models/user.model.js';
+import { throwError } from '../../../app/utils/throw.error.js';
 import { CheckListStates } from '../../../app/configs/config.js';
 import { ExamRecordsModel } from '../models/examRecords.model.js';
 import { ExamTypesModel } from '../../medicalFollowUp/models/examTypes.model.js';
@@ -18,11 +19,7 @@ export class ExamRecordsController {
             const { page = 1, limit = 15 } = req.query;
             const examCheckListItem = await ExamCheckListModel.getCheckListItemByID(req.params.checkListItemID);
 
-            if(!examCheckListItem){
-                const err = new Error('Examen no registrado para el colaborador.');
-                err.status = 404;
-                throw err;
-            }
+            if(!examCheckListItem) throwError('Examen no registrado para el colaborador.', 404);
 
             const { examRecords, totalExamRecords } = await ExamRecordsModel.getExamRecords(
                 req.params.checkListItemID, page, limit
@@ -79,34 +76,18 @@ export class ExamRecordsController {
              ? req.body.PDF_url = `${String(process.env.SERVER_URL)}/uploads/${req.file.filename}` 
              : req.body.PDF_url = 'SIN PDF';
 
-            if (!checkListItemID) {
-               const err = new Error('El item del CheckList hace falta');
-               err.status = 400;
-               throw err;
-            }
+            if (!checkListItemID) throwError('El item del CheckList hace falta', 400);
 
             const checkListItem = await ExamCheckListModel.getCheckListItemByID(checkListItemID);
 
-            if(!checkListItem){
-                const err = new Error('El item del CheckList NO ha sido encontrado');
-                err.status = 404;
-                throw err;
-            }
-
-            if(!CheckListStates.includes(state)){
-                const err = new Error('Estado NO valido');
-                err.status = 404;
-                throw err;
-            }
-
+            if(!checkListItem) throwError('El item del CheckList NO ha sido encontrado', 404);
+            
+            if(!CheckListStates.includes(state)) throwError('Estado NO valido', 404);
+            
             validateDates(dateMade, expirationDate);
 
-            if(!frequencyInDays || parseInt(frequencyInDays) < 1){
-                const err = new Error('Frecuencia en dias incorrecta');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!frequencyInDays || parseInt(frequencyInDays) < 1) throwError('Frecuencia en dias incorrecta', 400);
+            
             const result = await ExamRecordsModel.create({
                 checkListItemID, 
                 state, 
@@ -117,12 +98,9 @@ export class ExamRecordsController {
                 totalDays: frequencyInDays
             });
 
-            if(!result.success){
-                const err = new Error('Hubo un error al registrar el examen, por favor volver a intentarlo');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!result.success)
+                throwError('Hubo un error al registrar el examen, por favor volver a intentarlo', 400);
+            
             await ExamLogsModel.create({
                 checkListItemID: result.id,
                 action: 'CREACIÓN',
@@ -158,35 +136,20 @@ export class ExamRecordsController {
 
             let checklListID = undefined;
 
-            if(!userDocument || userDocument.trim().length < 5){
-                const err = new Error('El documento del colaborador es obligatorio');
-                err.status = 400;
-                throw err;
-            }
+            if(!userDocument || userDocument.trim().length < 5) throwError('El documento del colaborador es obligatorio', 400);
 
             const user = await UserModel.getUsersByProperties(userDocument);
             
-            if(!user[0]){
-                const err = new Error('colaborador NO encontrado');
-                err.status = 400;
-                throw err;  
-            }
+            if(!user[0]) throwError('colaborador NO encontrado', 400);
 
-            if(req.query.typeExam && !['income', 'egress'].includes(req.query.typeExam)){
-                const err = new Error('Tipo de examen inválido');
-                err.status = 400;
-                throw err;  
-            }
-
+            if(req.query.typeExam && !['income', 'egress'].includes(req.query.typeExam))
+                throwError('Tipo de examen inválido', 400);
+            
             const examInfo = await ExamTypesModel.getExamByName(
                 (req.query?.typeExam || 'income') === 'income' ? 'Ingreso' : 'Egreso'
             );
 
-            if(!CheckListStates.includes(state)){
-                const err = new Error('Estado NO valido');
-                err.status = 404;
-                throw err;
-            }
+            if(!CheckListStates.includes(state)) throwError('Estado NO valido', 404);
 
             const userHasExamRegistered = await ExamCheckListModel.hasUserExamInChecklist(
                 examInfo.tipo_examen_id, userDocument
@@ -197,12 +160,9 @@ export class ExamRecordsController {
                     userDocument, examInfo.tipo_examen_id, 'SI'
                 );
 
-                if(!result){
-                    const err = new Error('Hubo un error asignar el examen, por favor volver a intentarlo');
-                    err.status = 400;
-                    throw err;  
-                }
-
+                if(!result)
+                    throwError('Hubo un error asignar el examen, por favor volver a intentarlo', 400);
+                
                 const newExamRecord = await ExamCheckListModel.hasUserExamInChecklist(
                     examInfo.tipo_examen_id, userDocument
                 );
@@ -227,12 +187,9 @@ export class ExamRecordsController {
                 totalDays: 1
             });
 
-            if(!result.success){
-                const err = new Error('Hubo un error al registrar el examen, por favor volver a intentarlo');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!result.success)
+                throwError('Hubo un error al registrar el examen, por favor volver a intentarlo', 400);
+            
             await ExamLogsModel.create({
                 checkListItemID: result.id,
                 action: 'CREACIÓN',
@@ -261,11 +218,7 @@ export class ExamRecordsController {
         try {
             const examItem = await ExamRecordsModel.getExamRecordByID(req.params.checkListItemID);
 
-            if(!examItem){
-                const err = new Error('El registro no ha sido encontrado');
-                err.status = 404;
-                throw err; 
-            }
+            if(!examItem) throwError('El registro no ha sido encontrado', 404);
 
             const { 
                 dateMade = examItem.fecha_realizado,
@@ -276,26 +229,15 @@ export class ExamRecordsController {
                 frequencyInDays = examItem.frecuencia_dias,
             } = req.body;
 
-            if(!CheckListStates.includes(state)){
-                const err = new Error('Estado NO válido');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!CheckListStates.includes(state)) throwError('Estado NO válido', 400);
+            
             validateDates(dateMade, expirationDate);
 
-            if(!frequencyInDays || parseInt(frequencyInDays) < 1){
-                const err = new Error('Frecuencia en días incorrecta');
-                err.status = 400;
-                throw err;
-            }
+            if(!frequencyInDays || parseInt(frequencyInDays) < 1) throwError('Frecuencia en días incorrecta', 400);
+            
 
-            if(!updateReason || updateReason.trim().length < 5){
-                const err = new Error('La razón de actualización es obligatoria');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!updateReason || updateReason.trim().length < 5) throwError('La razón de actualización es obligatoria', 400);
+            
             if(req.file){
                 req.body.PDF_url = `${String(process.env.SERVER_URL)}/uploads/${req.file.filename}`;
 
@@ -328,12 +270,8 @@ export class ExamRecordsController {
                 totalDays: frequencyInDays
             });
 
-            if(!result){
-                const err = new Error('No se pudo actualizar, volver a intentar por favor');
-                err.status = 400;
-                throw err;
-            }
-
+            if(!result) throwError('No se pudo actualizar, volver a intentar por favor', 400);
+         
             await ExamLogsModel.create({
                 checkListItemID: req.params.checkListItemID,
                 action: 'ACTUALIZACIÓN',
@@ -362,25 +300,14 @@ export class ExamRecordsController {
         try {
             const examItem = await ExamRecordsModel.getExamRecordByID(req.params.checkListItemID);
 
-            if(!examItem){
-                const err = new Error('El registro no ha sido encontrado');
-                err.status = 404;
-                throw err; 
-            }
+            if(!examItem) throwError('El registro no ha sido encontrado', 404);
 
-            if(!req.body.deletionReason || req.body.deletionReason.trim().length < 5){
-                const err = new Error('Por favor, dar el motivo de eliminación');
-                err.status = 400;
-                throw err; 
-            }
-
+            if(!req.body.deletionReason || req.body.deletionReason.trim().length < 5)
+                throwError('Por favor, dar el motivo de eliminación', 400);
+    
             const result = await ExamRecordsModel.delete(req.params.checkListItemID);
 
-            if(!result){
-                const err = new Error('No se pudo eliminar, volver a intentar por favor');
-                err.status = 400;
-                throw err;
-            }
+            if(!result) throwError('No se pudo eliminar, volver a intentar por favor', 400);
 
             await ExamLogsModel.create({
                 checkListItemID: req.params.checkListItemID,
