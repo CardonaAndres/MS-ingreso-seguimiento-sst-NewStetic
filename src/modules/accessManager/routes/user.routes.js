@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get('/', UserAccesController.getAllowedUsers);
 router.post('/', UserAccesController.giveAccess);
+router.patch('/:userID', UserAccesController.updateAccess);
 
 export default router;
