@@ -14,7 +14,7 @@ await PermissionsClass.syncAdminPermissions(Object.values(allPermissions));
 cron.schedule("0 16 * * *", async () => {
   console.log("⏰ Ejecutando sincronización diaria de permisos...");
   await PermissionsClass.syncPermissions(Object.values(allPermissions));
-  await PermissionsClass.syncAdminRole(Object.values(allPermissions));
+  await PermissionsClass.syncAdminPermissions(Object.values(allPermissions));
 }, {
   timezone: "America/Bogota" 
 });
