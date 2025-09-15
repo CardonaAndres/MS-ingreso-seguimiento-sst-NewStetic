@@ -2,7 +2,7 @@ import sql from 'mssql';
 import { ConnDataBase } from '../../../app/utils/conn.database.js';
 import { throwError } from '../../../app/utils/throw.error.js';
 
-const conn = new ConnDataBase().connect(String(process.env.DB_SST_NAME));
+const conn = await new ConnDataBase().connect(String(process.env.DB_SST_NAME));
 
 export class UserAccessModel {
     static async getAllowerdUsers(){

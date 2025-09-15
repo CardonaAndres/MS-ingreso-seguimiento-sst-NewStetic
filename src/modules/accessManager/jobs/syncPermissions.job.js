@@ -1,5 +1,18 @@
-import { PermissionsClass } from "../utils/permissions.js";
+import cron from "node-cron";
+import { PermissionsClass } from "..//services/permissions.manager.js";
+import { examRecordsPermissions } from '../../examRecords/utils/permissions.js';
+import { medicalFollowUpPermissions } from "../../medicalFollowUp/utils/permissions.js";
 
-const routes = [];
+export const allPermissions = {
+  ...examRecordsPermissions,
+  ...medicalFollowUpPermissions,
+};
 
-await PermissionsClass.syncPermissions(routes);
+await PermissionsClass.syncPermissions(Object.values(allPermissions));
+
+cron.schedule("0 16 * * *", async () => {
+  console.log("⏰ Ejecutando sincronización diaria de permisos...");
+  await PermissionsClass.syncPermissions(Object.values(allPermissions));
+}, {
+  timezone: "America/Bogota" 
+});

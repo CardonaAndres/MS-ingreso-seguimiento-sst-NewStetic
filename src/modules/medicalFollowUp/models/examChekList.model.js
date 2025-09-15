@@ -2,7 +2,7 @@ import sql from 'mssql';
 import * as queries from '../utils/examChekList.queries.js';
 import { ConnDataBase } from '../../../app/utils/conn.database.js';
 
-const conn = new ConnDataBase().connect(String(process.env.DB_SST_NAME));
+const conn = await new ConnDataBase().connect(String(process.env.DB_SST_NAME));
 
 export class ExamCheckListModel {
     static async getCheckList(userDocument){

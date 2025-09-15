@@ -9,7 +9,7 @@ export class ConnDataBase {
         ];
     }
 
-    connect(databaseName) {
+    async connect(databaseName) {
         if (!this.databases.includes(databaseName)) {
             console.log(`La base de datos ${databaseName} no está soportada.`);
             return null;
@@ -31,7 +31,7 @@ export class ConnDataBase {
                     pool.on('connect', () => console.log('✓ Conexión exitosa a COMPESACIONES'));
                     pool.on('error', (err) => console.error('Error en la conexión a COMPESACIONES:', err.message));
 
-                    this.pool = pool.connect();
+                    this.pool = await pool.connect();
                     return pool;
 
                 } catch (err) {
@@ -55,7 +55,7 @@ export class ConnDataBase {
                     pool.on('connect', () => console.log('✓ Conexión exitosa a SST'));
                     pool.on('error', (err) => console.error('Error en la conexión a SST: ', err.message));
 
-                    this.pool = pool.connect();
+                    this.pool = await pool.connect();
                     return pool;
 
                 } catch (err) {

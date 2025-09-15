@@ -1,7 +1,7 @@
 import sql from 'mssql';
 import { ConnDataBase } from '../../../app/utils/conn.database.js';
 
-const conn = new ConnDataBase().connect(String(process.env.DB_SST_NAME));
+const conn = await new ConnDataBase().connect(String(process.env.DB_SST_NAME));
 
 export class ExamLogsModel {
     static async getLogs(examItemID){
