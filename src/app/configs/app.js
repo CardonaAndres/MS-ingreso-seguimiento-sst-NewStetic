@@ -4,13 +4,14 @@ import express from "express";
 import morgan from "morgan";
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
-import staffRouter from '../../modules/users/routes/users.routes.js'
+import staffRouter from '../../modules/users/routes/users.routes.js';
 import examTypesRouter from '../../modules/medicalFollowUp/routes/examTypes.routes.js';
 import examRecords from '../../modules/examRecords/routes/examRecords.routes.js';
 import examLogs from '../../modules/examRecords/routes/examLogs.routes.js';
 import examChekListRouter from '../../modules/medicalFollowUp/routes/examCheckList.routes.js';
-import rolesRouter from '../../modules/accessManager/routes/role.routes.js'
-import usersAccessRouter from '../../modules/accessManager/routes/user.routes.js'
+import rolesRouter from '../../modules/accessManager/routes/role.routes.js';
+import permissionsRouter from '../../modules/accessManager/routes/permissions.routes.js';
+import usersAccessRouter from '../../modules/accessManager/routes/user.routes.js';
 import { errorHandler } from '../middlewares/error.handler.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 
@@ -33,6 +34,7 @@ app.use(cookieParser(String(process.env.COOKIE_SECRET)));
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 app.use('/API-SST/v1/roles', authMiddleware, rolesRouter);
+app.use('/API-SST/v1/roles-permissions', authMiddleware, permissionsRouter);
 app.use('/API-SST/v1/allowed-users', authMiddleware, usersAccessRouter);
 
 app.use('/API-SST/v1/staff', authMiddleware, staffRouter);
