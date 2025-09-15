@@ -82,4 +82,39 @@ export class PermissionsClass {
             console.error('❌ Error en syncPermissions:', err.message || err);
         }
     }
+    
+    static async syncAdminPermissions(routes){
+        try {
+            const conn = await new ConnDataBase().connect(String(process.env.DB_SST_NAME));
+
+            await conn.request().query(`
+                INSERT INTO roles_permisos (rol_id, permiso_id)
+                SELECT r.rol_id, p.permiso_id
+                FROM Roles r
+                CROSS JOIN permisos p
+                WHERE r.nombre = 'Admin'
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM roles_permisos rp
+                        WHERE rp.rol_id = r.rol_id
+                        AND rp.permiso_id = p.permiso_id
+                    );
+            `);
+
+            const codes = routes.map(r => `'${r.code}'`).join(", ");
+
+            await conn.request().query(`
+                DELETE rp
+                FROM roles_permisos rp
+                INNER JOIN Roles r ON rp.rol_id = r.rol_id
+                INNER JOIN permisos p ON rp.permiso_id = p.permiso_id
+                WHERE r.nombre = 'Admin'
+                AND p.code NOT IN (${codes});
+            `);
+
+            console.log("✅ Permisos de Admin sincronizados correctamente \n");
+        } catch (err) {
+            console.error("❌ Error al sincronizar permisos de Admin:", err.message || err);
+        }
+    }
 }
