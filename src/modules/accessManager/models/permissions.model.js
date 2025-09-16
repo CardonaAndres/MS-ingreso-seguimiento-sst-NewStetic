@@ -21,4 +21,30 @@ export class PermissionModel {
 
         return result.recordset
     }
+
+    static async getPermissionsByID(permissionID){        
+        const result = await conn.request()
+        .input('permissionID', sql.Int, permissionID)
+        .query(`SELECT * FROM permisos WHERE permiso_id = @permissionID`);
+
+        return result.recordset[0];
+    }
+
+    static async associatePermission(roleAndPermissionsInfo){
+        const { roleID, permissionID } = roleAndPermissionsInfo;
+
+        await conn.request()
+        .input("roleID", sql.Int, roleID)
+        .input("permissionID", sql.Int, permissionID)
+        .query(`
+            INSERT INTO roles_permisos (rol_id, permiso_id)
+            VALUES (@roleID, @permissionID)
+        `);
+    }
+
+    static async removePermissionsFromRole(roleID){
+        await conn.request()
+        .input('roleID', sql.Int, roleID)
+        .query(`DELETE FROM roles_permisos WHERE rol_id = @roleID`);
+    }
 } 

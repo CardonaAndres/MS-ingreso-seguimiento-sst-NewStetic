@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { PermissionsClass } from "..//services/permissions.manager.js";
+import { PermissionsClass } from "../services/permissions.manager.js";
 import { examRecordsPermissions } from '../../examRecords/utils/permissions.js';
 import { medicalFollowUpPermissions } from "../../medicalFollowUp/utils/permissions.js";
 
