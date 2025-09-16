@@ -9,6 +9,7 @@ export const examRecordsPermissions = {
     code: "examRecords.createIncomeOrEgress",
     description: "Permite registrar ingresos o egresos con documento adjunto"
   },
+  
   "examRecords.update": {
     name: "Actualizar registro de examen",
     code: "examRecords.update",

@@ -30,6 +30,25 @@ export class PermissionModel {
         return result.recordset[0];
     }
 
+    static async getUserPermissions(username){
+        const result = await conn.request()
+        .input('username', sql.VarChar, username)   
+        .query(`
+            SELECT 
+                u.username,
+                r.nombre as rol,
+                p.nombre as permiso,
+                p.code as codigo_permiso
+            FROM usuarios u
+            INNER JOIN roles r ON u.rol_id = r.rol_id
+            INNER JOIN roles_permisos rp ON r.rol_id = rp.rol_id
+            INNER JOIN permisos p ON rp.permiso_id = p.permiso_id
+            WHERE u.username = @username
+        `);
+
+        return result.recordset;
+    }
+
     static async getUserPermission(username, code){
        const result = await conn.request()
         .input('code', sql.VarChar, code)

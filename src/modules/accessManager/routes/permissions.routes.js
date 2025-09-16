@@ -5,6 +5,7 @@ import { PermissionController } from "../controllers/permissions.controller.js";
 const router = express.Router();
 
 router.get('/', authorizeRole([1]), PermissionController.getAllPermisions);
+router.get('/user/permissions', PermissionController.getUserPermissions);
 router.get('/:roleID', authorizeRole([1]), PermissionController.getPermissionsByRole);
 
 export default router;
