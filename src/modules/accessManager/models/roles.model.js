@@ -17,6 +17,24 @@ export class RolesModel {
         return result.recordset[0]
     }
 
+    static async getRoleByUsername(username, rolesIDs){
+        const rolesList = rolesIDs.join(",");
+        const result = await conn.request()
+        .input("username", sql.VarChar, username)
+        .query(`
+            SELECT 
+            u.*,
+            r.nombre AS nombreRol,
+            r.descripcion AS descripcionRol
+            FROM usuarios u
+            INNER JOIN roles r ON u.rol_id = r.rol_id
+            WHERE u.username = @username
+            AND r.rol_id IN (${rolesList})
+        `);
+
+        return result.recordset.length > 0 ? result.recordset[0] : null;
+    }
+
     static async createRole(roleInfo){
         const { name, description } = roleInfo;
 

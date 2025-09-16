@@ -31,25 +31,31 @@ export class ExamCheckListController {
         try {
             const { userDocument, examTypeId, isRequired } = req.body;
 
-            if(!userDocument || !examTypeId || !isRequired) throwError('Faltan campos obligatorios', 400);
+            if(!userDocument || !examTypeId || !isRequired) 
+                throwError('Faltan campos obligatorios', 400);
 
-            if(!['SI', 'NO'].includes(isRequired)) throwError('El campo "es requerido" no es valido', 400);
+            if(!['SI', 'NO'].includes(isRequired)) 
+                throwError('El campo "es requerido" no es valido', 400);
 
             const user = await UserModel.getUsersByProperties(userDocument);
 
-            if(!user[0]) throwError('colaborador NO encontrado', 404);
+            if(!user[0]) 
+                throwError('colaborador NO encontrado', 404);
         
             const examType = await ExamTypesModel.getExamByID(examTypeId);
 
-            if(!examType) throwError('tipo de examen NO encontrado', 404);
+            if(!examType) 
+                throwError('tipo de examen NO encontrado', 404);
 
             const hasUserExam = await ExamCheckListModel.hasUserExamInChecklist(examTypeId, userDocument);
 
-            if(hasUserExam) throwError('El colaborador ya tiene este examen asignado', 400);
+            if(hasUserExam) 
+                throwError('El colaborador ya tiene este examen asignado', 400);
 
             const result = await ExamCheckListModel.addCheckListItem(userDocument, examTypeId, isRequired);
 
-            if(!result) throwError('Hubo un error asignar el examen, por favor volver a intentarlo', 400);
+            if(!result) 
+                throwError('Hubo un error asignar el examen, por favor volver a intentarlo', 400);
 
             return res.status(201).json({
                 message: 'Examen asignado correctamente al colaborador.'
