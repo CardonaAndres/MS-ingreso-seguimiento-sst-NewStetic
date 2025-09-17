@@ -67,7 +67,7 @@ export class PermissionController {
 
             const permissions = await PermissionModel.getUserPermissions(req.user.username);
 
-            cache.set(cacheKey, { permissions, user }, 5 * 60);
+            cache.set(cacheKey, { permissions, user }, 2 * 60);
 
             return res.status(200).json({
                 message: 'Los permisos del usuario: ' + req.user.username,
