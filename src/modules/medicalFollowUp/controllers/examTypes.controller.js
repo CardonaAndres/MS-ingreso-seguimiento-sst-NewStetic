@@ -63,7 +63,7 @@ export class ExamTypesController {
             );
 
             if(examTypeToUpdate.rowsAffected < 1) throwError('No se pudo actualizar el tipo de examen');
-    b
+            
             return res.status(200).json({
                 message: 'Tipo de examen actualizado correctamente'
             });
